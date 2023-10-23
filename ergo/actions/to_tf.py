@@ -30,23 +30,26 @@ def freeze_session(session, keep_var_names=None, output_names=None, clear_device
 
     graph = session.graph
     with graph.as_default():
-        freeze_var_names = list(set(v.op.name for v in tf.global_variables()).difference(keep_var_names or []))
+        freeze_var_names = list(
+            {v.op.name for v in tf.global_variables()}.difference(
+                (keep_var_names or [])
+            )
+        )
         output_names = output_names or []
         output_names += [v.op.name for v in tf.global_variables()]
         input_graph_def = graph.as_graph_def()
         if clear_devices:
             for node in input_graph_def.node:
                 node.device = ""
-        frozen_graph = tf.graph_util.convert_variables_to_constants(
-            session, input_graph_def, output_names, freeze_var_names)
-        return frozen_graph
+        return tf.graph_util.convert_variables_to_constants(
+            session, input_graph_def, output_names, freeze_var_names
+        )
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(prog="ergo to-tf", description="Convert the model inside an ergo project to TensorFlow format.",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("path", help="Path of the project containing the model.")
-    args = parser.parse_args(argv)
-    return args
+    return parser.parse_args(argv)
 
 def action_to_tf(argc, argv):
     args = parse_args(argv)

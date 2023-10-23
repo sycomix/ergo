@@ -9,7 +9,7 @@ class Loader(object):
         self.dataset = dataset
 
     def _reader(self, path):
-        log.info("loading %s ..." % path)
+        log.info(f"loading {path} ...")
         if self.dataset.is_flat:
             return pd.read_csv(path, sep = ',', header = None)
         else:

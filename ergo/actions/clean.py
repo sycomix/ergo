@@ -11,8 +11,7 @@ def parse_args(argv):
     parser.add_argument( "-a", "--all", dest="all", action="store_true", default=False,
         help="Remove model weights and training data.")
 
-    args = parser.parse_args(argv)
-    return args
+    return parser.parse_args(argv)
 
 def action_clean(argc, argv):
     args = parse_args(argv)

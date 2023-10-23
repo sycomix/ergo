@@ -19,4 +19,4 @@ class multi_model():
             def wrapper(*args, **kwargs):
                 return getattr(self.cpu_model, name)(*args, **kwargs)
             return wrapper
-        raise AttributeError("Method/Attribute %s not found for keras model" % name)
+        raise AttributeError(f"Method/Attribute {name} not found for keras model")

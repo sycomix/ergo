@@ -10,7 +10,7 @@ def parse_args(argv):
     parser = argparse.ArgumentParser(prog="ergo create", description="Create a new ergo project.",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("path", help="Path of the project to create.")
-    
+
     parser.add_argument("-i", "--inputs", dest="num_inputs", action="store", type=int, default=10,
         help="Number of inputs of the model.")
     parser.add_argument("-o", "--outputs", dest="num_outputs", action="store", type=int, default=2,
@@ -22,17 +22,16 @@ def parse_args(argv):
     parser.add_argument("-e", "--epochs", dest="max_epochs", action="store", type=int, default=50,
         help="Maximum number of epochs to train the model.")
 
-    args = parser.parse_args(argv)
-    return args
+    return parser.parse_args(argv)
 
 def action_create(argc, argv):
     args = parse_args(argv)
     if os.path.exists(args.path):
-        log.error("path %s already exists" % args.path)
+        log.error(f"path {args.path} already exists")
         quit()
 
     check = [n for n in [int(s.strip()) for s in args.hidden.split(',') if s.strip() != ""] if n > 0]
-    if len(check) < 1:
+    if not check:
         log.error("the --hidden argument must be a comma separated list of at least one positive integer")
         quit()
 

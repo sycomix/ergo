@@ -10,8 +10,7 @@ def parse_args(argv):
     parser.add_argument("path", help="Path of the project.")
     parser.add_argument( "--img-only", dest="img_only", default=False, action="store_true",
         help="Save plots as PNG files but don't show them in a UI.")
-    args = parser.parse_args(argv)
-    return args
+    return parser.parse_args(argv)
 
 def action_view(argc, argv):
     args = parse_args(argv)

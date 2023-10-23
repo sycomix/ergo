@@ -20,7 +20,7 @@ class TaskQueue(queue.Queue):
 
     def _start_workers(self):
         log.info("starting %d workers for %s" % (self.num_workers, self.name))
-        for i in range(self.num_workers):
+        for _ in range(self.num_workers):
             t = Thread(target=self._worker)
             t.daemon = True
             t.start()

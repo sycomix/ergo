@@ -48,7 +48,7 @@ def stats(prj, img_only):
 
                 name = header.strip(" -\n").lower()
                 title = "%s confusion matrix (%d samples)" % (name, tot)
-                filename = os.path.join(prj.path, "%s_cm.png" % name)
+                filename = os.path.join(prj.path, f"{name}_cm.png")
 
                 plt.figure(title)
                 plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Reds)
@@ -154,10 +154,7 @@ def plot_clusters(prj, pca, X, y, ca, D3 = False):
     ax.add_artist(legend1)
 
     fig.tight_layout()
-    if D3:
-        name = 'clusters_projection_3D.png'
-    else:
-        name = 'clusters_projection.png'
+    name = 'clusters_projection_3D.png' if D3 else 'clusters_projection.png'
     fig.savefig(os.path.join(prj.path, name))
 
 def plot_intertia(prj, x, y):
@@ -202,10 +199,7 @@ def pca_projection(prj, pca, X, y, D3):
     legend1 = ax.legend(*scatter.legend_elements(), loc = 'upper right', title = 'Class')
     ax.add_artist(legend1)
     fig.tight_layout()
-    if D3:
-        name = 'pca_projection_3d.png'
-    else:
-        name = 'pca_projection.png'
+    name = 'pca_projection_3d.png' if D3 else 'pca_projection.png'
     fig.savefig( os.path.join(prj.path, name))
 
 

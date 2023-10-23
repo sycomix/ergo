@@ -25,19 +25,20 @@ def is_number(s):
         return False
 
 def serialize_classification_report(cr):
-    tmp = list()
+    tmp = []
     for row in cr.split("\n"):
-        parsed_row = [x.strip() for x in row.split("  ") if len(x.strip()) > 0]
-        if len(parsed_row) > 0:
+        if parsed_row := [
+            x.strip() for x in row.split("  ") if len(x.strip()) > 0
+        ]:
             tmp.append(parsed_row)
-    
+
     measures = tmp[0]
     out = defaultdict(dict)
     for row in tmp[1:]:
         columns      = len(row)
         class_label  = row[0].strip()
         num_measures = len(measures)
-        
+
         # fixes https://github.com/evilsocket/ergo/issues/5
         while columns < num_measures + 1:
             row.insert(1, None)

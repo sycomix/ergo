@@ -51,10 +51,10 @@ class Project(object):
         return os.path.exists(self.weights_path)
 
     def load(self):
-        log.info("loading project %s ..." % self.path)
+        log.info(f"loading project {self.path} ...")
 
         if not self.exists():
-            return "%s does not exist" % self.path
+            return f"{self.path} does not exist"
 
         err = self.logic.load()
         if err is not None:
@@ -165,10 +165,7 @@ class Project(object):
 
     def prepare(self, source, p_test, p_val, shuffle = True):
         data = self._from_file(source)
-        num_labels = None
-        if self.model is not None:
-            # assuming only one single dense output layer
-            num_labels = self.model.outputs[-1].shape[1]
+        num_labels = None if self.model is None else self.model.outputs[-1].shape[1]
         log.info("data shape: %s", data.shape)
         return self.dataset.source(data, p_test, p_val, shuffle, num_labels)
 

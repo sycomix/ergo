@@ -29,8 +29,7 @@ def parse_args(argv):
     parser.add_argument( "-d", "--delete", dest="delete", default=False, action="store_true",
         help="Delete each file after encoding it.")
 
-    args = parser.parse_args(argv)
-    return args
+    return parser.parse_args(argv)
 
 # given the arguments setup and a path, return the label
 def label_of(args, path):
@@ -97,7 +96,7 @@ def appender(filepath, total, results):
 def parse_input(prj, inp, label, results, do_delete = False):
     log.debug("encoding '%s' as '%s' ...", inp, label)
     x = prj.logic.prepare_input(inp, is_encoding = True)
-    results.put("%s,%s" % (str(label), ','.join(map(str,x))))
+    results.put(f"{str(label)},{','.join(map(str, x))}")
     if do_delete and os.path.isfile(inp): 
         os.remove(inp)
 
@@ -112,7 +111,7 @@ def action_encode(argc, argv):
     if err is not None:
         log.error("error while loading project: %s", err)
         quit()
-    
+
     args.label = args.label.strip().lower()
     log.info("using %s labeling", 'auto' if args.label == 'auto' else 'hardcoded')
 
@@ -137,17 +136,16 @@ def action_encode(argc, argv):
             log.info("collected %d inputs from %s", len(in_files), args.path)
 
         log.info("labeling %d files ...", len(in_files))
-        for filepath in in_files:
-            if os.path.isfile(filepath):
-                inputs.append((label_of(args, filepath), filepath))
-
+        inputs.extend(
+            (label_of(args, filepath), filepath)
+            for filepath in in_files
+            if os.path.isfile(filepath)
+        )
     elif args.multi:
         log.info("parsing multiple inputs from %s ...", args.path)
         label = label_of(args, args.path)
         with open(args.path, 'rt') as fp:
-            for line in fp:
-                inputs.append((label, line))
-
+            inputs.extend((label, line) for line in fp)
     else:
         label = label_of(args, args.path)
         inputs.append((label, args.path))

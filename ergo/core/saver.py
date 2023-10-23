@@ -9,7 +9,7 @@ class Saver(object):
 
     @staticmethod
     def _worker(v, filename, flat):
-        log.info("saving %s ..." % filename)
+        log.info(f"saving {filename} ...")
 
         if not flat:
             pickle.dump( v, open( filename, "wb" ) )

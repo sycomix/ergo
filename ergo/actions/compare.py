@@ -23,8 +23,7 @@ def parse_args(argv):
     parser.add_argument("-j", "--to-json", dest="to_json", action="store", type=str, required=False,
                         help="Output the comparision results to this json file.")
 
-    args = parser.parse_args(argv)
-    return args
+    return parser.parse_args(argv)
 
 
 def red(s):
@@ -43,24 +42,24 @@ def default(o):
 
 def generate_reduced_dataset(dataset, size=10):
     temp_name = next(tempfile._get_candidate_names())
-    tmpfile = open(temp_name, 'w')
-    count = 0
-    with open(dataset, 'r') as inpfile:
-        for line in inpfile: count += 1
+    with open(temp_name, 'w') as tmpfile:
+        count = 0
+        with open(dataset, 'r') as inpfile:
+            for _ in inpfile:
+                count += 1
 
-    size = min(count, 100)
-    size = max(count // 100, size)
-    log.info("creating temporary dataset %s of size %d", temp_name, size)
+        size = min(count, 100)
+        size = max(count // 100, size)
+        log.info("creating temporary dataset %s of size %d", temp_name, size)
 
-    with open(dataset, 'r') as inpfile:
-        p = float(size) / count
-        # assuming header:
-        tmpfile.write(inpfile.readline())
-        for i in inpfile:
-            line = inpfile.readline()
-            if np.random.random() < p:
-                tmpfile.write(line)
-    tmpfile.close()
+        with open(dataset, 'r') as inpfile:
+            p = float(size) / count
+            # assuming header:
+            tmpfile.write(inpfile.readline())
+            for i in inpfile:
+                line = inpfile.readline()
+                if np.random.random() < p:
+                    tmpfile.write(line)
     return temp_name
 
 
@@ -78,10 +77,7 @@ def are_preparation_equal(projects, dataset):
 def compare_datasets(ds1, ds2):
     if ds1.is_flat:
         return np.array_equal(ds1.X, ds2.X)
-    for i, j in zip(ds1.X, ds2.X):
-        if not np.array_equal(i, j):
-            return False
-    return True
+    return all(np.array_equal(i, j) for i, j in zip(ds1.X, ds2.X))
 
 
 def action_compare(argc, argv):
@@ -163,22 +159,20 @@ def action_compare(argc, argv):
                 if new_value != ref_value:
                     delta = new_value - ref_value
                     sign, fn = ('+', green) if delta >= 0 else ('', red)
-                    diffs['report'].append({
-                        'name': '%s / %s' % (label, name),
-                        'delta': delta,
-                    })
-                    table.append([ \
-                        "%s / %s" % (label, name),
-                        "%.2f" % ref_value,
-                        "%.2f" % new_value,
-                        fn("%s%.2f" % (sign, delta))])
+                    diffs['report'].append({'name': f'{label} / {name}', 'delta': delta})
+                    table.append(
+                        [
+                            f"{label} / {name}",
+                            "%.2f" % ref_value,
+                            "%.2f" % new_value,
+                            fn("%s%.2f" % (sign, delta)),
+                        ]
+                    )
         print("")
         print(AsciiTable(table).table)
 
         heads = [""]
-        for i in range(0, ref_cm.shape[0]):
-            heads.append("class %d" % i)
-
+        heads.extend("class %d" % i for i in range(0, ref_cm.shape[0]))
         table = [heads]
         total = 0
         impr = 0

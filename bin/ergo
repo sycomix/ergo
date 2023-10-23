@@ -75,7 +75,7 @@ def main():
         action_help()
 
     elif action not in ACTIONS:
-        log.error("unknown action %s" % action)
+        log.error(f"unknown action {action}")
         action_help()
 
     else:

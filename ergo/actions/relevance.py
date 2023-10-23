@@ -40,8 +40,7 @@ def parse_args(argv):
              "to distribute the computation among, -1 to use the number of logical CPU cores available. WARNING: " + \
              "The dataset will be copied in memory for each worker."   )
 
-    args = parser.parse_args(argv)
-    return args
+    return parser.parse_args(argv)
 
 def get_attributes(filename, ncols):
     attributes = []

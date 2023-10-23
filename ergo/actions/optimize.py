@@ -22,8 +22,7 @@ def parse_args(argv):
     parser.add_argument("-o", "--output", dest="output", action="store", default=None,
         help="Output dataset file.")
 
-    args = parser.parse_args(argv)
-    return args
+    return parser.parse_args(argv)
 
 def action_optimize_dataset(argc, argv):
     args = parse_args(argv)

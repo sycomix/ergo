@@ -5,14 +5,14 @@ from importlib.machinery import SourceFileLoader
 class Logic(object):
     @staticmethod
     def get_doer(name):
-        log.debug("loading %s ..." % name)
+        log.debug(f"loading {name} ...")
         return SourceFileLoader("",name).load_module()
 
     @staticmethod
     def get_symbol(name, symbol):
         doer = Logic.get_doer(name)
         if symbol not in doer.__dict__:
-            return None, "%s does not define a %s function" % (name, symbol)
+            return None, f"{name} does not define a {symbol} function"
         return doer.__dict__[symbol], None
 
     @staticmethod
@@ -21,7 +21,7 @@ class Logic(object):
         ret  = []
         for symbol in symbols:
             if symbol not in doer.__dict__:
-                return None, "%s does not define a %s function" % (name, symbol)
+                return None, f"{name} does not define a {symbol} function"
             else:
                 ret.append(doer.__dict__[symbol])
         return ret, None
@@ -37,7 +37,7 @@ class Logic(object):
         self.trainer          = None
 
     def load(self):
-        preparers, err = Logic.get_symbols(self.preparer_path, ('prepare_dataset', 'prepare_input')) 
+        preparers, err = Logic.get_symbols(self.preparer_path, ('prepare_dataset', 'prepare_input'))
         if err is not None:
             return err
         else:
@@ -48,10 +48,7 @@ class Logic(object):
             return err
 
         self.trainer, err = Logic.get_symbol(self.trainer_path, 'train_model')
-        if err is not None:
-            return err
-
-        return None
+        return err if err is not None else None
 
     def prepare_dataset(self, filename):
         return self.dataset_preparer(filename)

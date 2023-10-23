@@ -12,7 +12,7 @@ def probability(x):
 
 def validate_args(args):
     if args.dataset is not None and (not args.dataset.startswith('sum://') and not os.path.exists(args.dataset)):
-        log.error("file %s does not exist" % args.dataset)
+        log.error(f"file {args.dataset} does not exist")
         quit()
 
     p_train = 1 - args.test - args.validation

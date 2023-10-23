@@ -92,7 +92,7 @@ class Dataset(object):
 
     def _is_scalar_value(self, v):
         try:
-            return not (len(v) >= 0)
+            return len(v) < 0
         except TypeError:
             # TypeError: object of type 'X' has no len()
             return True
@@ -100,12 +100,7 @@ class Dataset(object):
             raise
 
     def source(self, data, p_test = 0.0, p_val = 0.0, shuffle = True, n_labels=None):
-        if shuffle:
-            # reset indexes and resample data just in case
-            dataset = data.sample(frac = 1).reset_index(drop = True)
-        else:
-            dataset = data
-
+        dataset = data.sample(frac = 1).reset_index(drop = True) if shuffle else data
         # check if the input vectors are made of scalars or other vectors
         self.is_flat = True
         for x in dataset.iloc[0,:]:

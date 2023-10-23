@@ -89,7 +89,7 @@ def print_target_correlation_table(corr, min_corr = 0.3):
         if abs(c) < min_corr:
             not_relevant += 1
             continue
-        row = ( "%d" % idx, "%s" % at, "%.4f" % c)
+        row = "%d" % idx, f"{at}", "%.4f" % c
         table.append(row)
 
     print("")
@@ -111,10 +111,7 @@ def calculate_corr(X):
     return pd.DataFrame(np.corrcoef(X, rowvar=False), columns=attributes, index=attributes)
 
 def is_in_table(table, entry):
-    for row in table:
-        if row[1] == entry[0] and row[0] == entry[1]:
-            return True
-    return False
+    return any(row[1] == entry[0] and row[0] == entry[1] for row in table)
 
 
 def print_correlation_table(corr, min_corr=0.6):
@@ -161,9 +158,13 @@ def print_stats_table(X):
     print("")
     print(AsciiTable(table).table)
     print("")
-    log.warning("The following attributes have constant values: %s" % ', '.join(constant))
+    log.warning(
+        f"The following attributes have constant values: {', '.join(constant)}"
+    )
     print("")
-    log.warning("The following features are not normalized: %s" % ', '.join(unormalized))
+    log.warning(
+        f"The following features are not normalized: {', '.join(unormalized)}"
+    )
 
 
 def kmeans_clustering(X, n_clusters):

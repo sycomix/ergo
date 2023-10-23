@@ -43,8 +43,7 @@ def parse_args(argv):
     parser.add_argument("-j", "--to-json", dest="to_json", action="store_true", default=False,
         help="Output the information to json instead of text.")
 
-    args = parser.parse_args(argv)
-    return args
+    return parser.parse_args(argv)
 
 def action_info(argc, argv):
     args = parse_args(argv)
@@ -66,8 +65,8 @@ def action_info(argc, argv):
                 'memory': dev.memory_limit,
                 'description': dev.physical_device_desc
             })
-        
-        print(json.dumps(info)) 
+
+        print(json.dumps(info))
     else:
         print(banner.strip("\n") % (__version__, keras.__version__, tf.__version__, sklearn.__version__))
         print("")
@@ -76,4 +75,6 @@ def action_info(argc, argv):
         devs = device_lib.list_local_devices()
         npad, tpad  = get_pads(devs)
         for dev in devs:
-            print( "%s (%s) - %s" % (dev.name.ljust(npad,' '), dev.device_type.ljust(tpad,' '), mem_fmt(dev.memory_limit)))
+            print(
+                f"{dev.name.ljust(npad, ' ')} ({dev.device_type.ljust(tpad, ' ')}) - {mem_fmt(dev.memory_limit)}"
+            )

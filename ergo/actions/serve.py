@@ -119,8 +119,7 @@ def parse_args(argv):
     parser.add_argument("--classes", dest="classes", default=None,
         help="Optional comma separated list of output classes.")
 
-    args = parser.parse_args(argv)
-    return args
+    return parser.parse_args(argv)
 
 def action_serve(argc, argv):
     global prj, app, classes, num_outputs
